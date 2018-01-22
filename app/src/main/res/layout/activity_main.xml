@@ -10,6 +10,7 @@
         android:id="@+id/rv_alljokes"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        tools:listitem="@layout/alljokes_rvitem"
         />
 
 
