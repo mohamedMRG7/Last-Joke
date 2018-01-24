@@ -8,12 +8,15 @@
     android:layout_gravity="left"
     android:layout_height="match_parent">
 
+
+
     <ImageView
         android:id="@+id/logo"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        app:layout_constraintStart_toStartOf="@id/container"
+        app:layout_constraintLeft_toLeftOf="@id/container"
         app:layout_constraintTop_toBottomOf="@id/guideline"
+        android:foregroundGravity="left"
         app:srcCompat="@drawable/logonotxt" />
 
     <ImageView
@@ -33,59 +36,14 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:textStyle="bold"
+        android:textAppearance="@style/TextAppearance.AppCompat"
         android:gravity="top"
         app:layout_constraintBottom_toBottomOf="@+id/container"
         app:layout_constraintBottom_toTopOf="@+id/guideline"
         app:layout_constraintEnd_toEndOf="@id/container"
         app:layout_constraintStart_toStartOf="@+id/container"
         app:layout_constraintTop_toTopOf="@+id/container"
-        tools:text="@string/teststring" />
-
-    <ImageView
-        android:id="@+id/happyface"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginTop="8dp"
-        app:srcCompat="@drawable/ic_laughing"
-        app:layout_constraintBottom_toBottomOf="@+id/container"
-        app:layout_constraintEnd_toStartOf="@+id/tv_happyfacenumbers"
-        app:layout_constraintTop_toBottomOf="@+id/guideline" />
-
-    <TextView
-        android:id="@+id/tv_happyfacenumbers"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        app:layout_constraintBottom_toBottomOf="@+id/container"
-        app:layout_constraintEnd_toEndOf="@+id/container"
-        app:layout_constraintTop_toBottomOf="@+id/guideline"
-        tools:text="22" />
-
-    <TextView
-        android:id="@+id/tv_sadfacenumbers"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintBottom_toBottomOf="@+id/container"
-        app:layout_constraintEnd_toStartOf="@+id/happyface"
-        app:layout_constraintTop_toBottomOf="@+id/guideline"
-        tools:text="12" />
-
-    <ImageView
-        android:id="@+id/sadface"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginTop="8dp"
-        app:srcCompat="@drawable/ic_vain"
-        app:layout_constraintBottom_toBottomOf="@+id/container"
-        app:layout_constraintEnd_toStartOf="@+id/tv_sadfacenumbers"
-        app:layout_constraintTop_toBottomOf="@+id/guideline" />
+        android:text="@string/addJokeTalk" />
 
     <android.support.constraint.Guideline
         android:id="@+id/guideline"
@@ -93,5 +51,40 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintGuide_begin="84dp" />
+
+    <EditText
+        android:id="@+id/et_addjoke"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/logo" />
+
+    <Button
+        android:id="@+id/bt_addjoke"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:text="@string/add"
+        android:textColor="@color/white"
+        android:background="@drawable/buttonshap"
+        app:layout_constraintEnd_toEndOf="@id/et_addjoke"
+        app:layout_constraintTop_toBottomOf="@id/et_addjoke"
+        tools:layout_editor_absoluteY="269dp" />
+
+    <Button
+        android:id="@+id/bt_cancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        app:layout_constraintEnd_toStartOf="@+id/bt_addjoke"
+        app:layout_constraintTop_toBottomOf="@id/et_addjoke"
+        android:background="@drawable/buttoncancel"
+
+        android:text="@string/cancel" />
 
 </android.support.constraint.ConstraintLayout>

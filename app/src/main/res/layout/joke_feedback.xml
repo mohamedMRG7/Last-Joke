@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFEBEE"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <View
+        android:id="@+id/viewHigh"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:background="@color/redHigh"/>
+    <View
+        android:id="@+id/viewMedium1"
+        android:layout_width="match_parent"
+        android:layout_height="25dp"
+        android:background="@color/redMedium1"
+        app:layout_constraintTop_toBottomOf="@id/viewHigh"/>
+    <View
+        android:id="@+id/viewMedium2"
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:background="@color/redMedium2"
+        app:layout_constraintTop_toBottomOf="@id/viewMedium1"/>
+    <View
+        android:id="@+id/viewMedium3"
+        android:layout_width="match_parent"
+        android:layout_height="15dp"
+        android:background="@color/redMeium3"
+        app:layout_constraintTop_toBottomOf="@id/viewMedium2"/>
+    <View
+        android:id="@+id/viewLow"
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:background="@color/redLow"
+        app:layout_constraintTop_toBottomOf="@id/viewMedium3"/>
+
+    <ImageView
+        android:id="@+id/logo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/viewMedium1"
+        app:srcCompat="@drawable/logonotxt"
+        tools:layout_editor_absoluteY="48dp" />
+
+
+    <TextView
+        android:id="@+id/user_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:layout_editor_absoluteX="29dp"
+        tools:layout_editor_absoluteY="228dp"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Body2"
+        android:text="Mohamed Ragab"
+        app:layout_constraintTop_toBottomOf="@+id/logo"
+        app:layout_constraintLeft_toLeftOf="@+id/logo"
+        app:layout_constraintRight_toRightOf="@+id/logo"/>
+
+    <TextView
+        android:id="@+id/see_user_jokes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/seejokes"
+        android:textColor="@color/colorAccent"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Body1"
+
+        app:layout_constraintTop_toBottomOf="@+id/user_name"
+        app:layout_constraintLeft_toLeftOf="@+id/user_name"
+        app:layout_constraintRight_toRightOf="@+id/user_name" />
+
+    <TextView
+        android:id="@+id/txt_joke"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/teststring"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        app:layout_constraintLeft_toLeftOf="@+id/see_user_jokes"
+        app:layout_constraintRight_toRightOf="@+id/see_user_jokes"
+        app:layout_constraintTop_toBottomOf="@+id/see_user_jokes" />
+
+    <ImageView
+        android:id="@+id/img_happy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/img_sad"
+        app:layout_constraintTop_toBottomOf="@+id/txt_joke"
+        app:srcCompat="@drawable/ic_vain_v2" />
+
+    <ImageView
+        android:id="@+id/img_sad"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:layout_constraintLeft_toRightOf="@+id/img_happy"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txt_joke"
+        app:srcCompat="@drawable/ic_laughing_v2" />
+
+    <ImageView
+        android:id="@+id/img_addtofave"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/user_name"
+        app:layout_constraintLeft_toRightOf="@+id/user_name"
+        app:layout_constraintTop_toTopOf="@+id/user_name"
+        app:srcCompat="@drawable/ic_follow_of"
+        android:paddingLeft="8dp"/>
+
+</android.support.constraint.ConstraintLayout>

@@ -1,4 +1,11 @@
 <resources>
     <string name="app_name">Last Joke</string>
     <string name="teststring">Lorem ipsum dolor sit amet, sapien etiam, nunc amet dolor ac odio mauris justo. Luctus arcu, urna praesent at id  eget.</string>
+    <string name="addJokeTalk">Hey Dude , I know u are funny but they dont ,so lets add some jokes to prove :D</string>
+    <string name="add">Add</string>
+    <string name="cancel">Cancel</string>
+
+    <string name="seejokes">See jokes</string>
+    <string name="show_jokes">Show Jokes</string>
+
 </resources>

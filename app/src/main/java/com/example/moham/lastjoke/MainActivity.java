@@ -1,9 +1,16 @@
 package com.example.moham.lastjoke;
 
+import android.app.Dialog;
 import android.content.Context;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatDelegate;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.Window;
+import android.widget.Button;
 
 import com.wangjie.androidbucket.utils.ABTextUtil;
 import com.wangjie.rapidfloatingactionbutton.RapidFloatingActionButton;
@@ -24,9 +31,20 @@ public class MainActivity extends AppCompatActivity implements RapidFloatingActi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
 
+
+        AlertDialog.Builder dialog=new AlertDialog.Builder(MainActivity.this);
+        LayoutInflater inflater=getLayoutInflater();
+        View view=inflater.inflate(R.layout.addjoke_contents,null);
+
+        dialog.setView(view);
+
+        dialog.show();
+
+
+        //set up floating action button and meus
         List<RFACLabelItem> listOfFloatingMenu=getfloatingMenuList();
-
         RapidFloatingActionContentLabelList labelshape=getlablelcontentshap(getApplicationContext(),listOfFloatingMenu);
 
 
