@@ -6,51 +6,15 @@
     android:layout_width="match_parent"
     android:layoutDirection="ltr"
     android:layout_gravity="left"
+    android:background="@color/redveryLow"
     android:layout_height="match_parent">
 
 
 
-    <ImageView
-        android:id="@+id/logo"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        app:layout_constraintLeft_toLeftOf="@id/container"
-        app:layout_constraintTop_toBottomOf="@id/guideline"
-        android:foregroundGravity="left"
-        app:srcCompat="@drawable/logonotxt" />
 
-    <ImageView
-        android:id="@+id/container"
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:layout_marginTop="8dp"
-        android:background="@drawable/chat"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-
-    <TextView
-        android:id="@+id/tv_joke"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:textStyle="bold"
-        android:textAppearance="@style/TextAppearance.AppCompat"
-        android:gravity="top"
-        app:layout_constraintBottom_toBottomOf="@+id/container"
-        app:layout_constraintBottom_toTopOf="@+id/guideline"
-        app:layout_constraintEnd_toEndOf="@id/container"
-        app:layout_constraintStart_toStartOf="@+id/container"
-        app:layout_constraintTop_toTopOf="@+id/container"
-        android:text="@string/addJokeTalk" />
-
-    <android.support.constraint.Guideline
-        android:id="@+id/guideline"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_begin="84dp" />
+   <include
+       android:id="@+id/upper"
+       layout="@layout/profile_upper_content"/>
 
     <EditText
         android:id="@+id/et_addjoke"
@@ -58,9 +22,11 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:hint="Lets add some jokes Dude"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/logo" />
+        app:layout_constraintTop_toBottomOf="@id/upper" />
 
     <Button
         android:id="@+id/bt_addjoke"

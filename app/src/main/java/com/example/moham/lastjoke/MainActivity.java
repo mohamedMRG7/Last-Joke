@@ -2,16 +2,23 @@ package com.example.moham.lastjoke;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatDelegate;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.EditText;
 
+import com.example.moham.lastjoke.comonUtilties.PopupDialogUtiles;
+import com.example.moham.lastjoke.comonUtilties.ViewsActionInterface;
+import com.example.moham.lastjoke.following.FollowingActivity;
 import com.wangjie.androidbucket.utils.ABTextUtil;
 import com.wangjie.rapidfloatingactionbutton.RapidFloatingActionButton;
 import com.wangjie.rapidfloatingactionbutton.RapidFloatingActionHelper;
@@ -22,25 +29,51 @@ import com.wangjie.rapidfloatingactionbutton.contentimpl.labellist.RapidFloating
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements RapidFloatingActionContentLabelList.OnRapidFloatingActionContentLabelListListener{
+public class MainActivity extends AppCompatActivity implements MainJokesAdapter.Onitemclick,View.OnClickListener,RapidFloatingActionContentLabelList.OnRapidFloatingActionContentLabelListListener{
 
     private RapidFloatingActionLayout rfaLayout;
     private RapidFloatingActionButton rfaBtn;
     private RapidFloatingActionHelper rfabHelper;
+    private PopupDialogUtiles dialogUtiles;
+    private MainJokesAdapter adapter;
+    private RecyclerView rv_alljokes;
+    private EditText et_addjoke;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
 
+        //dialog intiation
+         dialogUtiles=new PopupDialogUtiles(MainActivity.this, R.layout.activity_addjoke, new ViewsActionInterface() {
 
-        AlertDialog.Builder dialog=new AlertDialog.Builder(MainActivity.this);
-        LayoutInflater inflater=getLayoutInflater();
-        View view=inflater.inflate(R.layout.addjoke_contents,null);
 
-        dialog.setView(view);
+            @Override
+            public void action(View view, android.app.AlertDialog dialog) {
 
-        dialog.show();
+                Button add =view.findViewById(R.id.bt_addjoke);
+                add.setOnClickListener(MainActivity.this);
+                Button cancel=view.findViewById(R.id.bt_cancel);
+                cancel.setOnClickListener(MainActivity.this);
+                et_addjoke=view.findViewById(R.id.et_addjoke);
+            }
+        });
+
+
+         rv_alljokes=findViewById(R.id.rv_alljokes);
+
+         adapter=new MainJokesAdapter(this);
+
+        LinearLayoutManager layoutManager
+                = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        rv_alljokes.setLayoutManager(layoutManager);
+
+         rv_alljokes.setAdapter(adapter);
+
+
+
+
 
 
         //set up floating action button and meus
@@ -62,9 +95,21 @@ public class MainActivity extends AppCompatActivity implements RapidFloatingActi
     @Override
     public void onRFACItemLabelClick(int i, RFACLabelItem rfacLabelItem) {
         rfabHelper.toggleContent();
-        int positionIndex = 6 - i;
-        if(i==0)
-        Log.d("Main activity",positionIndex+"");
+
+        switch (i) {
+            case  0:
+                //add joke
+                dialogUtiles.showDialoge();
+                break;
+            case  1:
+                //move to followes activity
+                Intent intent=new Intent(MainActivity.this, FollowingActivity.class);
+                startActivity(intent);
+                break;
+
+            case  2:
+                //start setting fragment
+        }
     }
 
     @Override
@@ -83,19 +128,14 @@ public class MainActivity extends AppCompatActivity implements RapidFloatingActi
         List<RFACLabelItem> items = new ArrayList<>();
 
         items.add(new RFACLabelItem<Integer>()
-                .setLabel("My Jokes")
+                .setLabel("Add Joke")
                 .setResId(R.drawable.myjokes)
 
                 .setWrapper(0)
         );
-        items.add(new RFACLabelItem<Integer>()
-                .setLabel("Followed")
-                .setResId(R.drawable.followers)
 
-                .setWrapper(0)
-        );
         items.add(new RFACLabelItem<Integer>()
-                .setLabel("My Favourite Jokes")
+                .setLabel("My Funny people")
                 .setResId(R.drawable.favourits)
 
                 .setWrapper(0)
@@ -127,5 +167,30 @@ public class MainActivity extends AppCompatActivity implements RapidFloatingActi
         ;
 
         return rfaContent;
+    }
+
+
+    @Override
+    public void onClick(View view) {
+
+        switch (view.getId()) {
+            case R.id.bt_cancel :
+                dialogUtiles.cancelDialog();
+                break;
+
+            case R.id.bt_addjoke :
+                String joke=et_addjoke.getText().toString();
+                //add joke to data base
+
+
+
+        }
+
+    }
+
+    @Override
+    public void onclick(int itempos) {
+        Log.d("onclick",itempos+"");
+
     }
 }
