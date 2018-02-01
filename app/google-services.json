@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "783356819257",
+    "firebase_url": "https://lastjoke-736b0.firebaseio.com",
+    "project_id": "lastjoke-736b0",
+    "storage_bucket": "lastjoke-736b0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:783356819257:android:40116a0c849ca3c8",
+        "android_client_info": {
+          "package_name": "com.example.moham.lastjoke"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "783356819257-8hj92iv9eh2fsenko8fk79d4gdo5tgs7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.moham.lastjoke",
+            "certificate_hash": "b3cb7d69df7a2668724dc3ff5fc10a012c6c60bc"
+          }
+        },
+        {
+          "client_id": "783356819257-08i84p3ogv1usn8df05t0qfng78rlo04.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBZX2xnTyVj4yxmok2vHAhNEhFfOgCXimQ"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "783356819257-08i84p3ogv1usn8df05t0qfng78rlo04.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

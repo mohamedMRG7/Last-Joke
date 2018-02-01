@@ -7,5 +7,14 @@
 
     <string name="seejokes">See jokes</string>
     <string name="show_jokes">Show Jokes</string>
+    <string name="joke_language">Joke language</string>
+    <string name="lang_defValue">Arabicِ</string>
+    <string name="key_jokesLanguage">listJokeLanguages</string>
+    <string name="joke_notification">Joke Notification</string>
+    <string name="key_joke_notification">key_joke_notification</string>
+    <string name="key_notification_timer">notificationTimer</string>
 
+    <string name="timer_defult_value">30</string>
+    <string name="arabic">Arabic</string>
+    <string name="english">English</string>
 </resources>

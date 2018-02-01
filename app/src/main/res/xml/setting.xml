@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <ListPreference
+        android:title="@string/joke_language"
+        android:entryValues="@array/languagh_values"
+        android:entries="@array/langaugh_label"
+        android:defaultValue="@string/lang_defValue"
+        android:summary="@string/lang_defValue"
+        android:key="@string/key_jokesLanguage"
+        />
+
+    <SwitchPreferenceCompat
+        android:title="@string/joke_notification"
+        android:defaultValue="true"
+        android:key="@string/key_joke_notification"
+        android:summaryOn="ON"
+        android:summaryOff="OFF"
+        />
+
+    <ListPreference
+        android:title="Tell me a joke every "
+        android:entries="@array/pref_notifyTime_Label"
+        android:entryValues="@array/pref_notifyTime_values"
+        android:defaultValue="@string/timer_defult_value"
+        android:summary="30 Min"
+        android:key="@string/key_notification_timer"
+        />
+
+</PreferenceScreen>

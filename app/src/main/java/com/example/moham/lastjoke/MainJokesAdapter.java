@@ -1,11 +1,14 @@
 package com.example.moham.lastjoke;
 
+import android.database.Cursor;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import com.example.moham.lastjoke.Database.JokeContract;
 
 /**
  * Created by moham on 1/27/2018.
@@ -14,16 +17,16 @@ import android.widget.TextView;
 public class MainJokesAdapter extends RecyclerView.Adapter<MainJokesAdapter.JokeAdapterViewHokder> {
 
 
-    private String [] joke={"mara enten byl3abo sala7 wa7d mat w el tany shala7at","mara wa7ed etneen telata","mara etneen w 3shereen e8tasabo 23 fe el 7amam","fk u bitch"};
-    private int[] sadNmbers={22,32,5,13};
-    private int[] happynumber={3,6,4,22};
+
     private Onitemclick onitemclick;
+    Cursor cursor;
 
 
 
-    public MainJokesAdapter (Onitemclick onitemclick)
+    public MainJokesAdapter (Onitemclick onitemclick ,Cursor cursor)
     {
         this.onitemclick=onitemclick;
+        this.cursor=cursor;
     }
 
 
@@ -41,15 +44,22 @@ public class MainJokesAdapter extends RecyclerView.Adapter<MainJokesAdapter.Joke
     public void onBindViewHolder(JokeAdapterViewHokder holder, int position) {
 
         if (position !=0) {
-            holder.txt_joke.setText(joke[position-1]);
-            holder.txt_sadNumber.setText(String.valueOf(sadNmbers[position-1]));
-            holder.txt_happyNumber.setText(String.valueOf(happynumber[position-1]));
+            //make position-1 cuse it will start from postion 1 and i want it tio start from postion 0
+            // so i removed 1 from it and added 1 to the count
+            cursor.moveToPosition(position-1);
+            String joke=cursor.getString(cursor.getColumnIndex(JokeContract.JokeEntry.COLUMN_JOKE));
+            String sadnumber=String.valueOf(cursor.getInt(cursor.getColumnIndex(JokeContract.JokeEntry.COLUMN_SADNUM)));
+            String happynumber=String.valueOf(cursor.getInt(cursor.getColumnIndex(JokeContract.JokeEntry.COLUMN_HAPPYNUM)));
+
+            holder.txt_joke.setText(joke);
+            holder.txt_sadNumber.setText(String.valueOf(sadnumber));
+            holder.txt_happyNumber.setText(String.valueOf(happynumber));
         }
     }
 
     @Override
     public int getItemCount() {
-        return joke.length+1;
+        return cursor.getCount()+1;
     }
 
 
@@ -78,6 +88,12 @@ public class MainJokesAdapter extends RecyclerView.Adapter<MainJokesAdapter.Joke
             onitemclick.onclick(position);
 
         }
+    }
+
+    public void updateCursor(Cursor cursor)
+    {
+        this.cursor=cursor;
+        notifyDataSetChanged();
     }
 
     @Override

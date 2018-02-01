@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <array name="languagh_values">
+
+        <item >Arabic</item>
+        <item>English</item>
+        <item>Both</item>
+
+    </array>
+
+    <array name="langaugh_label">
+
+        <item>Arabic</item>
+        <item>English</item>
+        <item>Both</item>
+
+    </array>
+
+
+    <string-array name="pref_notifyTime_values">
+        <item>15</item>
+        <item>30</item>
+        <item>45</item>
+        <item>60</item>
+        <item>120</item>
+        <item>180</item>
+    </string-array>
+
+
+    <string-array name="pref_notifyTime_Label">
+        <item>15 Min</item>
+        <item>30 Min</item>
+        <item>45 Min</item>
+        <item>1 Hour</item>
+        <item>2 Hours</item>
+        <item>3 Hours</item>
+    </string-array>
+
+
+</resources>

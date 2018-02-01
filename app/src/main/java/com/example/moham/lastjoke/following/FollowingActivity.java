@@ -18,20 +18,20 @@ public class FollowingActivity extends AppCompatActivity implements MainJokesAda
 
 
     private RecyclerView mRecyclerView;
-    private MainJokesAdapter adapter;
+    private FollwingAdapter adapter;
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_jokes);
 
-        setTitle("hey");
+        setTitle("YOUR FAVOURITE LIST");
 
         mRecyclerView=findViewById(R.id.rv_userjokes);
         LinearLayoutManager layoutManager
                 = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(layoutManager);
 
-        adapter=new MainJokesAdapter(this);
+        adapter=new FollwingAdapter();
         mRecyclerView.setAdapter(adapter);
     }
 

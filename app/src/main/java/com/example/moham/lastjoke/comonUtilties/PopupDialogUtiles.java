@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.example.moham.lastjoke.R;
@@ -18,25 +19,36 @@ public class PopupDialogUtiles {
     AlertDialog.Builder builder;
     AlertDialog dialog;
     ViewsActionInterface buttonActions;
+    View view1;
 
     public PopupDialogUtiles (Activity context, int viewID, ViewsActionInterface action)
     {
         builder =new AlertDialog.Builder(context);
+        builder.create();
         LayoutInflater inflater=context.getLayoutInflater();
-        View view1=inflater.inflate(viewID,null);
+
+        view1=inflater.inflate(viewID,null,false);
+
+
+
         builder.setView(view1);
-        dialog= builder.create();
+
         action.action(view1,dialog);
     }
 
     public void showDialoge()
     {
-      dialog=builder.show();
+        if (view1.getParent() !=null)
+            ((ViewGroup)view1.getParent()).removeView(view1);
+        dialog=builder.show();
     }
 
     public void cancelDialog()
     {
+
         dialog.dismiss();
+
+
     }
 
 
