@@ -15,13 +15,15 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.example.moham.lastjoke.Database.DbUtilies;
 import com.example.moham.lastjoke.Database.FirebaseDbUtilies;
-import com.example.moham.lastjoke.comonUtilties.Dofn_after_fn;
-import com.example.moham.lastjoke.comonUtilties.Done;
-import com.example.moham.lastjoke.comonUtilties.Done2;
+import com.example.moham.lastjoke.auth.AuthinticationActivity;
 import com.example.moham.lastjoke.comonUtilties.PopupDialogUtiles;
+import com.example.moham.lastjoke.comonUtilties.ShardprfContract;
+import com.example.moham.lastjoke.comonUtilties.SharedprfUtiles;
 import com.example.moham.lastjoke.comonUtilties.ViewsActionInterface;
 import com.example.moham.lastjoke.following.FollowingActivity;
 import com.example.moham.lastjoke.setting.SettingActivity;
@@ -40,15 +42,15 @@ import com.wangjie.rapidfloatingactionbutton.RapidFloatingActionLayout;
 import com.wangjie.rapidfloatingactionbutton.contentimpl.labellist.RFACLabelItem;
 import com.wangjie.rapidfloatingactionbutton.contentimpl.labellist.RapidFloatingActionContentLabelList;
 
+import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
 public class MainActivity extends AppCompatActivity implements
         MainJokesAdapter.Onitemclick,View.OnClickListener,
         RapidFloatingActionContentLabelList.OnRapidFloatingActionContentLabelListListener,
-        SharedPreferences.OnSharedPreferenceChangeListener{
+        SharedPreferences.OnSharedPreferenceChangeListener {
 
 
 
@@ -61,7 +63,10 @@ public class MainActivity extends AppCompatActivity implements
     private Cursor cursor;
     private SharedPreferences sharedPreferences;
     private FirebaseAuth firebaseAuth;
+    private UserJokes userUpdate;
+
     UserJokes userJokes;
+    SharedprfUtiles shardpSharedprfUtiles;
     FirebaseUser user1;
     FirebaseDbUtilies db;
     DatabaseReference reference;
@@ -74,8 +79,7 @@ public class MainActivity extends AppCompatActivity implements
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
 
 
-
-
+        shardpSharedprfUtiles=new SharedprfUtiles(MainActivity.this);
 
         //dialog intiation
          dialogUtiles=new PopupDialogUtiles(MainActivity.this, R.layout.activity_addjoke, new ViewsActionInterface() {
@@ -93,7 +97,7 @@ public class MainActivity extends AppCompatActivity implements
         });
 
 
-
+        userUpdate=new UserJokes();
 
 
         userJokes= (UserJokes) getIntent().getSerializableExtra(AuthinticationActivity.AUTHKEY);
@@ -158,7 +162,11 @@ public class MainActivity extends AppCompatActivity implements
                 break;
             case  1:
                 //move to followes activity
+                UserJokes listoffollower=new UserJokes();
+                List<String>followers=shardpSharedprfUtiles.getList(ShardprfContract.ISFOLLOW_KEY);
+                listoffollower.setFollowers(followers);
                 Intent intent=new Intent(MainActivity.this, FollowingActivity.class);
+                intent.putExtra("followers",listoffollower);
                 startActivity(intent);
                 break;
 
@@ -266,6 +274,7 @@ public class MainActivity extends AppCompatActivity implements
                 String joke=et_addjoke.getText().toString();
                 String name=userJokes.getUsername();
                 String email=userJokes.getEmail();
+
                 String uniq_id=String.valueOf(new Random().nextInt());
                 String icon ="logonotext.png";
                 UserJokes userJokes=new UserJokes(name,email,uniq_id,icon,joke,0,0);
@@ -276,8 +285,51 @@ public class MainActivity extends AppCompatActivity implements
                 dialogUtiles.cancelDialog();
                 break;
 
-                    //add joke to data base
+            case R.id.img_happy:
 
+                List<String>likes=shardpSharedprfUtiles.getList(ShardprfContract.ISLIKEDLIST_key);
+                if (!likes.contains(userUpdate.getUserIcon())) {
+                    likes.add(userUpdate.getUserIcon());
+
+                    db.updateHappynum(userUpdate.getUserIcon(), userUpdate.getHappy_num() + 1);
+                }else {
+                    likes.remove(userUpdate.getUserIcon());
+
+                    db.updateHappynum(userUpdate.getUserIcon(), userUpdate.getHappy_num() -1);
+                }
+                    shardpSharedprfUtiles.saveObect(likes,ShardprfContract.ISLIKEDLIST_key);
+                    userUpdate.getDialogUtiles().cancelDialog();
+                break;
+            case R.id.img_sad:
+                List<String>sades=shardpSharedprfUtiles.getList(ShardprfContract.ISSAD_KEY);
+                if (!sades.contains(userUpdate.getUserIcon())) {
+                    sades.add(userUpdate.getUserIcon());
+
+                    db.updatesadNum(userUpdate.getUserIcon(),userUpdate.getSad_num()+1);
+                }else {
+                    sades.remove(userUpdate.getUserIcon());
+
+                    db.updatesadNum(userUpdate.getUserIcon(),userUpdate.getSad_num()-1);
+                }
+                shardpSharedprfUtiles.saveObect(sades,ShardprfContract.ISSAD_KEY);
+
+                userUpdate.getDialogUtiles().cancelDialog();
+                break;
+
+            case R.id.img_addtofave:
+                List<String>followers=shardpSharedprfUtiles.getList(ShardprfContract.ISFOLLOW_KEY);
+                Log.d("follow",followers.size()+"");
+
+                if (!followers.contains(userUpdate.getUserIcon())) {
+                    followers.add(userUpdate.getUserIcon());
+                    userUpdate.getImg_follow().setImageResource(R.drawable.ic_follow_on);
+                   // db.updatesadNum(userUpdate.getUserIcon(),userUpdate.getSad_num()+1);
+                }else {
+                    followers.remove(userUpdate.getUserIcon());
+                    userUpdate.getImg_follow().setImageResource(R.drawable.ic_follow_of);
+                 //   db.updatesadNum(userUpdate.getUserIcon(),userUpdate.getSad_num()-1);
+                }
+                shardpSharedprfUtiles.saveObect(followers,ShardprfContract.ISFOLLOW_KEY);
 
 
         }
@@ -285,8 +337,43 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onclick(int itempos) {
-        Log.d("onclick",itempos+"");
+    public void onclick(final String username,final String email, final String joke,final String key,int happynum,int sadnum) {
+
+        final List liked=shardpSharedprfUtiles.getList(ShardprfContract.ISLIKEDLIST_key);
+        final List sad=shardpSharedprfUtiles.getList(ShardprfContract.ISSAD_KEY);
+        final List isfollow=shardpSharedprfUtiles.getList(ShardprfContract.ISFOLLOW_KEY);
+
+        PopupDialogUtiles dialogUtiles=new PopupDialogUtiles(MainActivity.this, R.layout.joke_feedback, new ViewsActionInterface() {
+
+
+            @Override
+            public void action(View view, android.app.AlertDialog dialog) {
+
+                ImageView addhappyPoints =view.findViewById(R.id.img_happy);
+                if (liked.contains(key))addhappyPoints.setImageResource(R.drawable.ic_laughing_v2); else addhappyPoints.setImageResource(R.drawable.ic_laughing__disable);
+                addhappyPoints.setOnClickListener(MainActivity.this);
+                ImageView addsadPoints=view.findViewById(R.id.img_sad);
+                if (sad.contains(key))addsadPoints.setImageResource(R.drawable.ic_vain_v2); else addsadPoints.setImageResource(R.drawable.ic_vain_disable);
+                addsadPoints.setOnClickListener(MainActivity.this);
+                ImageView img_follow=view.findViewById(R.id.img_addtofave);
+                if (isfollow.contains(key)) img_follow.setImageResource(R.drawable.ic_follow_on); else img_follow.setImageResource(R.drawable.ic_follow_of);
+                img_follow.setOnClickListener(MainActivity.this);
+                TextView user_jokes=view.findViewById(R.id.tv_see_user_jokes);
+                user_jokes.setOnClickListener(MainActivity.this);
+                TextView user_name=view.findViewById(R.id.tv_user_name);
+                user_name.setText(username);
+                TextView the_joke=view.findViewById(R.id.tv_joke);
+                the_joke.setText(joke);
+                userUpdate.setImg_follow(img_follow);
+
+            }
+        });
+        userUpdate.setUserIcon(key);
+        userUpdate.setHappy_num(happynum);
+        userUpdate.setSad_num(sadnum);
+        userUpdate.setDialogUtiles(dialogUtiles);
+
+        dialogUtiles.showDialoge();
 
     }
 

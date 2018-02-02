@@ -1,4 +1,4 @@
-package com.example.moham.lastjoke;
+package com.example.moham.lastjoke.auth;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -9,23 +9,20 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.moham.lastjoke.MainActivity;
+import com.example.moham.lastjoke.R;
 import com.example.moham.lastjoke.user.UserJokes;
 import com.firebase.ui.auth.AuthUI;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.zplesac.connectionbuddy.ConnectionBuddy;
-import com.zplesac.connectionbuddy.ConnectionBuddyCache;
 import com.zplesac.connectionbuddy.ConnectionBuddyConfiguration;
-import com.zplesac.connectionbuddy.activities.ConnectionBuddyActivity;
 import com.zplesac.connectionbuddy.interfaces.ConnectivityChangeListener;
 import com.zplesac.connectionbuddy.models.ConnectivityEvent;
 import com.zplesac.connectionbuddy.models.ConnectivityState;
 
 import java.io.Serializable;
 import java.util.Arrays;
-
-import javax.sql.ConnectionEvent;
-import javax.sql.ConnectionEventListener;
 
 public class AuthinticationActivity extends AppCompatActivity implements Serializable, ConnectivityChangeListener {
 

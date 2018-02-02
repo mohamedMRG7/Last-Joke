@@ -81,12 +81,18 @@ public class MainJokesAdapter extends RecyclerView.Adapter<MainJokesAdapter.Joke
 
         @Override
         public void onClick(View view) {
-
-
             int position =getAdapterPosition()-1;
-            if (position>=0)
-            onitemclick.onclick(position);
 
+            if (position>=0) {
+                cursor.moveToPosition(position);
+                String username=cursor.getString(cursor.getColumnIndex(JokeContract.JokeEntry.COLUMN_USERNAME));
+                String email=cursor.getString(cursor.getColumnIndex(JokeContract.JokeEntry.COLUMN_EMAIL));
+                String joke=cursor.getString(cursor.getColumnIndex(JokeContract.JokeEntry.COLUMN_JOKE));
+                String key=cursor.getString(cursor.getColumnIndex(JokeContract.JokeEntry.COLUMN_USER_ICON));
+                int happynum=cursor.getInt(cursor.getColumnIndex(JokeContract.JokeEntry.COLUMN_HAPPYNUM));
+                int sadnum=cursor.getInt(cursor.getColumnIndex(JokeContract.JokeEntry.COLUMN_SADNUM));
+                onitemclick.onclick(username, email, joke,key,happynum,sadnum);
+            }
         }
     }
 
@@ -113,6 +119,6 @@ public class MainJokesAdapter extends RecyclerView.Adapter<MainJokesAdapter.Joke
 
         public interface Onitemclick
         {
-            void onclick(int itempos);
+            void onclick(String username,String joke,String email,String key,int happynum,int sadnum);
         }
 }

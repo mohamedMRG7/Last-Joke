@@ -8,6 +8,8 @@ import android.widget.TextView;
 
 import com.example.moham.lastjoke.R;
 
+import java.util.List;
+
 /**
  * Created by moham on 1/29/2018.
  */
@@ -16,6 +18,12 @@ public class FollwingAdapter  extends RecyclerView.Adapter<FollwingAdapter.Follw
 
 
     private String [] dummynames={"mohamed ahmed","mohamed 5alel","ahmed sha3ban"};
+    private List<String> followers;
+
+    public FollwingAdapter(List<String> followers) {
+        this.followers = followers;
+    }
+
     @Override
     public FollwingAdapterViewholer onCreateViewHolder(ViewGroup parent, int viewType) {
 
@@ -29,12 +37,12 @@ public class FollwingAdapter  extends RecyclerView.Adapter<FollwingAdapter.Follw
     @Override
     public void onBindViewHolder(FollwingAdapterViewholer holder, int position) {
 
-        holder.username.setText(dummynames[position]);
+        holder.username.setText(followers.get(position));
     }
 
     @Override
     public int getItemCount() {
-        return dummynames.length;
+        return followers.size();
     }
 
 

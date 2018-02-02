@@ -12,7 +12,7 @@ public class DbHelper extends SQLiteOpenHelper {
 
 
     private static final String DATABASE_NAME="lastjoke.db";
-    private static final int DATABASE_VERSION=2;
+    private static final int DATABASE_VERSION=3;
 
 
 
@@ -25,7 +25,7 @@ public class DbHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        final String CRATE_TABLE="CREATE TABLE "+JokeContract.JokeEntry.TABLE_NAME+" ( "
+        final String CRATE_TABLE_JOKES="CREATE TABLE "+JokeContract.JokeEntry.TABLE_NAME+" ( "
                 +JokeContract.JokeEntry._ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "
                 +JokeContract.JokeEntry.COLUMN_USERNAME+" TEXT NOT NULL, "
                 +JokeContract.JokeEntry.COLUMN_EMAIL+" TEXT NOT NULL, "
@@ -38,7 +38,7 @@ public class DbHelper extends SQLiteOpenHelper {
                 +");";
 
 
-        sqLiteDatabase.execSQL(CRATE_TABLE);
+        sqLiteDatabase.execSQL(CRATE_TABLE_JOKES);
 
 
     }
