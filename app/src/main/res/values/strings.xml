@@ -8,7 +8,7 @@
     <string name="seejokes">See jokes</string>
     <string name="show_jokes">Show Jokes</string>
     <string name="joke_language">Joke language</string>
-    <string name="lang_defValue">Arabicِ</string>
+    <string name="lang_defValue">Bothِ</string>
     <string name="key_jokesLanguage">listJokeLanguages</string>
     <string name="joke_notification">Joke Notification</string>
     <string name="key_joke_notification">key_joke_notification</string>

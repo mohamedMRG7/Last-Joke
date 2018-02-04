@@ -12,7 +12,7 @@ public class DbHelper extends SQLiteOpenHelper {
 
 
     private static final String DATABASE_NAME="lastjoke.db";
-    private static final int DATABASE_VERSION=3;
+    private static final int DATABASE_VERSION=5;
 
 
 
@@ -25,7 +25,7 @@ public class DbHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        final String CRATE_TABLE_JOKES="CREATE TABLE "+JokeContract.JokeEntry.TABLE_NAME+" ( "
+        final String CREATE_TABLE_JOKES="CREATE TABLE "+JokeContract.JokeEntry.TABLE_NAME+" ( "
                 +JokeContract.JokeEntry._ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "
                 +JokeContract.JokeEntry.COLUMN_USERNAME+" TEXT NOT NULL, "
                 +JokeContract.JokeEntry.COLUMN_EMAIL+" TEXT NOT NULL, "
@@ -37,8 +37,22 @@ public class DbHelper extends SQLiteOpenHelper {
                 +JokeContract.JokeEntry.COLUMN_SADNUM+ " INTEGER NOT NULL "
                 +");";
 
+        final String CREATE_TABLE_FOLLOWERS="CREATE TABLE "+JokeContract.FollowersEntry.TABLE_NAME+" ( "
+                +JokeContract.FollowersEntry._ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "
+                +JokeContract.FollowersEntry.COLUMN_USERNAME+" TEXT NOT NULL, "
+                +JokeContract.FollowersEntry.COLUMN_EMAIL+" TEXT NOT NULL UNIQUE  "
 
-        sqLiteDatabase.execSQL(CRATE_TABLE_JOKES);
+                +");";
+
+        final String CREATE_TABLE_USERINFO="CREATE TABLE "+JokeContract.UserEntry.TABLE_NAME+" ( "
+                +JokeContract.UserEntry._ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "
+                +JokeContract.UserEntry.COLUMN_USERNAME+" TEXT NOT NULL, "
+                +JokeContract.UserEntry.COLUMN_EMAIL+" TEXT NOT NULL UNIQUE , "
+                +JokeContract.UserEntry.COLUMN_UID+" TEXT NOT NULL UNIQUE  "
+                +");";
+        sqLiteDatabase.execSQL(CREATE_TABLE_JOKES);
+        sqLiteDatabase.execSQL(CREATE_TABLE_FOLLOWERS);
+        sqLiteDatabase.execSQL(CREATE_TABLE_USERINFO);
 
 
     }
@@ -47,6 +61,8 @@ public class DbHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
 
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+ JokeContract.JokeEntry.TABLE_NAME);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+ JokeContract.FollowersEntry.TABLE_NAME);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+ JokeContract.UserEntry.TABLE_NAME);
         onCreate(sqLiteDatabase);
     }
 }

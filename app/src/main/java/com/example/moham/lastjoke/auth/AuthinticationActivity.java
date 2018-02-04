@@ -9,6 +9,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.moham.lastjoke.Database.DbUtilies;
+import com.example.moham.lastjoke.Database.FirebaseDbUtilies;
 import com.example.moham.lastjoke.MainActivity;
 import com.example.moham.lastjoke.R;
 import com.example.moham.lastjoke.user.UserJokes;
@@ -29,6 +31,8 @@ public class AuthinticationActivity extends AppCompatActivity implements Seriali
     private FirebaseAuth.AuthStateListener authStateListener;
     private static final int RC_SIGN_IN = 1;
     private FirebaseAuth firebaseAuth;
+    FirebaseDbUtilies firebaseDbUtilies;
+    DbUtilies dbUtilies;
     FirebaseUser firebaseuser;
     public static final String AUTHKEY="authkey";
     private boolean isConnected=false;
@@ -42,6 +46,7 @@ public class AuthinticationActivity extends AppCompatActivity implements Seriali
         firebaseAuth=FirebaseAuth.getInstance();
 
         sign_In();
+        firebaseDbUtilies =new FirebaseDbUtilies(this);
         ConnectionBuddyConfiguration networkInspectorConfiguration = new ConnectionBuddyConfiguration.Builder(this).build();
         ConnectionBuddy.getInstance().init(networkInspectorConfiguration);
         connectiontxt=findViewById(R.id.tv_noconnection);
@@ -58,10 +63,14 @@ public class AuthinticationActivity extends AppCompatActivity implements Seriali
 
                 if(user !=null)
                 {
-                    UserJokes userJokes=new UserJokes(user.getDisplayName(),user.getEmail());
+
+                    UserJokes userJokes=new UserJokes(user.getDisplayName(),user.getEmail(),user.getUid());
+                    firebaseDbUtilies.readUserinfo();
                     Intent intent=new Intent(AuthinticationActivity.this,MainActivity.class);
+                    intent.putExtra("activity","authactivity");
                     intent.putExtra(AUTHKEY,userJokes);
                     startActivity(intent);
+                  //  finish();
                 }else
                 {
 
@@ -109,10 +118,15 @@ public class AuthinticationActivity extends AppCompatActivity implements Seriali
             {
                 Log.e("inside","inside");
                 firebaseuser=firebaseAuth.getCurrentUser();
-                UserJokes userJokes=new UserJokes(firebaseuser.getDisplayName(),firebaseuser.getEmail());
+
+                UserJokes userJokes=new UserJokes(firebaseuser.getDisplayName(),firebaseuser.getEmail(),firebaseuser.getUid());
+                firebaseDbUtilies.addUserInfo(userJokes);
+                firebaseDbUtilies.readUserinfo();
                 Intent intent=new Intent(AuthinticationActivity.this,MainActivity.class);
                 intent.putExtra(AUTHKEY,userJokes);
+                intent.putExtra("activity","authactivity");
                 startActivity(intent);
+              //  finish();
 
                 //i will send the userjoke with data but will make it seriazable first and modify constractor
             }else if (resultCode==RESULT_CANCELED)  if (isConnected==true)finish();
@@ -132,6 +146,7 @@ public class AuthinticationActivity extends AppCompatActivity implements Seriali
     protected void onRestart() {
         super.onRestart();
         Log.d("ONCreat","onRestart");
+
     }
 
 
@@ -139,6 +154,7 @@ public class AuthinticationActivity extends AppCompatActivity implements Seriali
     protected void onStop() {
         super.onStop();
         ConnectionBuddy.getInstance().unregisterFromConnectivityEvents(this);
+        firebaseDbUtilies.removeuserlisner();
 
     }
 

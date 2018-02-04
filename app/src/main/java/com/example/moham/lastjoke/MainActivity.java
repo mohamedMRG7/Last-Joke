@@ -17,15 +17,19 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.moham.lastjoke.Database.DbUtilies;
 import com.example.moham.lastjoke.Database.FirebaseDbUtilies;
+import com.example.moham.lastjoke.Database.JokeContract;
 import com.example.moham.lastjoke.auth.AuthinticationActivity;
 import com.example.moham.lastjoke.comonUtilties.PopupDialogUtiles;
 import com.example.moham.lastjoke.comonUtilties.ShardprfContract;
 import com.example.moham.lastjoke.comonUtilties.SharedprfUtiles;
 import com.example.moham.lastjoke.comonUtilties.ViewsActionInterface;
 import com.example.moham.lastjoke.following.FollowingActivity;
+import com.example.moham.lastjoke.jokeNotification.JokeServiceUtilities;
+import com.example.moham.lastjoke.jokeNotification.NotificationUtilies;
 import com.example.moham.lastjoke.setting.SettingActivity;
 import com.example.moham.lastjoke.user.UserJokes;
 import com.firebase.ui.auth.AuthUI;
@@ -42,10 +46,8 @@ import com.wangjie.rapidfloatingactionbutton.RapidFloatingActionLayout;
 import com.wangjie.rapidfloatingactionbutton.contentimpl.labellist.RFACLabelItem;
 import com.wangjie.rapidfloatingactionbutton.contentimpl.labellist.RapidFloatingActionContentLabelList;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class MainActivity extends AppCompatActivity implements
         MainJokesAdapter.Onitemclick,View.OnClickListener,
@@ -64,19 +66,25 @@ public class MainActivity extends AppCompatActivity implements
     private SharedPreferences sharedPreferences;
     private FirebaseAuth firebaseAuth;
     private UserJokes userUpdate;
-
+    String useremail;
     UserJokes userJokes;
     SharedprfUtiles shardpSharedprfUtiles;
     FirebaseUser user1;
     FirebaseDbUtilies db;
     DatabaseReference reference;
     FirebaseDatabase database;
-
+    String activityname;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+
+
+
+
+
+
 
 
         shardpSharedprfUtiles=new SharedprfUtiles(MainActivity.this);
@@ -101,25 +109,23 @@ public class MainActivity extends AppCompatActivity implements
 
 
         userJokes= (UserJokes) getIntent().getSerializableExtra(AuthinticationActivity.AUTHKEY);
+         activityname =getIntent().getExtras().getString("activity");
+        Log.d("email",activityname+"");
 
-        Log.d("ONCreat",userJokes.getEmail().isEmpty()+"");
 
-
-        db=new FirebaseDbUtilies(this);
+        db=new FirebaseDbUtilies(this,shardpSharedprfUtiles,userJokes.getUserUniq_id());
 
 
         dbUtilies=new DbUtilies(this);
 
 
-
-
-
         sharedPreferences=PreferenceManager.getDefaultSharedPreferences(this);
         cursor=dbUtilies.showDependonLangauae(sharedPreferences,MainActivity.this);
 
+        //notify system call
+        setupNotifysystem(this,sharedPreferences);
 
-
-        //Recycler view set up
+            //Recycler view set up
          rv_alljokes=findViewById(R.id.rv_alljokes);
          adapter=new MainJokesAdapter(this,cursor);
         LinearLayoutManager layoutManager
@@ -127,9 +133,21 @@ public class MainActivity extends AppCompatActivity implements
         rv_alljokes.setLayoutManager(layoutManager);
          rv_alljokes.setAdapter(adapter);
 
+        if (activityname.equals("authactivity")) {
+            cursor = dbUtilies.showDependonLangauae(sharedPreferences, MainActivity.this);
+            adapter.updateCursor(cursor);
 
+        }
+        else if (activityname.equals("followingactivity")) {
+             useremail=getIntent().getExtras().getString("useremail");
+
+            cursor = dbUtilies.getJokesforUser(useremail);
+            adapter.updateCursor(cursor);
+            Log.d("email",cursor.getCount()+"");
+        }
 
         //set up floating action button and meus
+
         List<RFACLabelItem> listOfFloatingMenu=getfloatingMenuList();
         RapidFloatingActionContentLabelList labelshape=getlablelcontentshap(getApplicationContext(),listOfFloatingMenu);
 
@@ -145,7 +163,7 @@ public class MainActivity extends AppCompatActivity implements
 
 
     PreferenceManager.getDefaultSharedPreferences(this).registerOnSharedPreferenceChangeListener(this);
-    db.readFromFB(adapter,MainActivity.this,sharedPreferences);
+    db.readFromFB(adapter,MainActivity.this,sharedPreferences,useremail, activityname);
     }
 
 
@@ -161,12 +179,11 @@ public class MainActivity extends AppCompatActivity implements
                 dialogUtiles.showDialoge();
                 break;
             case  1:
-                //move to followes activity
-                UserJokes listoffollower=new UserJokes();
-                List<String>followers=shardpSharedprfUtiles.getList(ShardprfContract.ISFOLLOW_KEY);
-                listoffollower.setFollowers(followers);
+                //move to followes activityname
+
+
                 Intent intent=new Intent(MainActivity.this, FollowingActivity.class);
-                intent.putExtra("followers",listoffollower);
+                intent.putExtra(AuthinticationActivity.AUTHKEY,userJokes);
                 startActivity(intent);
                 break;
 
@@ -187,11 +204,44 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onRFACItemIconClick(int i, RFACLabelItem rfacLabelItem) {
         rfabHelper.toggleContent();
-        int positionIndex = 6 - i;
+
+        switch (i) {
+            case  0:
+                //add joke
+                dialogUtiles.showDialoge();
+                break;
+            case  1:
+                //move to followes activityname
+
+
+                Intent intent=new Intent(MainActivity.this, FollowingActivity.class);
+                intent.putExtra(AuthinticationActivity.AUTHKEY,userJokes);
+                startActivity(intent);
+                break;
+
+            case  2:
+                //start setting fragmentc
+
+                Intent intent1=new Intent(MainActivity.this, SettingActivity.class);
+                startActivity(intent1);
+                break;
+
+            case  3:
+                signOut();
+        }
     }
 
 
-
+    private void setupNotifysystem(Context context,SharedPreferences sharedPreferences)
+    {
+        String timer_key=getString(R.string.key_notification_timer);
+        String timer_defvalue=getString(R.string.timer_defult_value);
+        int notificationTime= Integer.parseInt(sharedPreferences.getString(timer_key,timer_defvalue));
+        String isOn_key=getString(R.string.key_joke_notification);
+        boolean isOndefValue=true;
+        boolean isnotifyOn=sharedPreferences.getBoolean(isOn_key,isOndefValue);
+        JokeServiceUtilities.schedulNotificationTime(context,notificationTime,isnotifyOn);
+    }
 
 
     private void signOut() {
@@ -201,6 +251,8 @@ public class MainActivity extends AppCompatActivity implements
                     public void onComplete(@NonNull Task<Void> task) {
                         // ...
                         db.removeLisner();
+                        Intent intent =new Intent(MainActivity.this,AuthinticationActivity.class);
+                        startActivity(intent);
                     }
                 });
     }
@@ -241,6 +293,29 @@ public class MainActivity extends AppCompatActivity implements
         return items;
     }
 
+    private List<RFACLabelItem> showalljokes()
+    {
+        List<RFACLabelItem> items = new ArrayList<>();
+
+        items.add(new RFACLabelItem<Integer>()
+                .setLabel("Show all jokes")
+                .setResId(R.drawable.myjokes)
+
+                .setWrapper(0)
+        );
+
+
+        items.add(new RFACLabelItem<Integer>()
+                .setLabel("Sign Out")
+                .setResId(R.drawable.exit)
+
+                .setWrapper(0)
+        );
+
+        return items;
+    }
+
+
     //Lable shape and add items
     private RapidFloatingActionContentLabelList getlablelcontentshap(Context context,List<RFACLabelItem> items)
 
@@ -275,7 +350,7 @@ public class MainActivity extends AppCompatActivity implements
                 String name=userJokes.getUsername();
                 String email=userJokes.getEmail();
 
-                String uniq_id=String.valueOf(new Random().nextInt());
+                String uniq_id=userJokes.getUserUniq_id();
                 String icon ="logonotext.png";
                 UserJokes userJokes=new UserJokes(name,email,uniq_id,icon,joke,0,0);
                 db.addUserJoketoFB(userJokes);
@@ -320,13 +395,17 @@ public class MainActivity extends AppCompatActivity implements
                 List<String>followers=shardpSharedprfUtiles.getList(ShardprfContract.ISFOLLOW_KEY);
                 Log.d("follow",followers.size()+"");
 
-                if (!followers.contains(userUpdate.getUserIcon())) {
-                    followers.add(userUpdate.getUserIcon());
+                if (!followers.contains(userUpdate.getEmail())) {
+                    followers.add(userUpdate.getEmail());
                     userUpdate.getImg_follow().setImageResource(R.drawable.ic_follow_on);
+                    dbUtilies.addJFollwer(userUpdate);
+                    db.addfollwerlist(userUpdate.getUserUniq_id(),followers);
                    // db.updatesadNum(userUpdate.getUserIcon(),userUpdate.getSad_num()+1);
                 }else {
-                    followers.remove(userUpdate.getUserIcon());
+                    followers.remove(userUpdate.getEmail());
                     userUpdate.getImg_follow().setImageResource(R.drawable.ic_follow_of);
+                    dbUtilies.deleteFollower(userUpdate);
+                    db.addfollwerlist(userUpdate.getUserUniq_id(),followers);
                  //   db.updatesadNum(userUpdate.getUserIcon(),userUpdate.getSad_num()-1);
                 }
                 shardpSharedprfUtiles.saveObect(followers,ShardprfContract.ISFOLLOW_KEY);
@@ -337,7 +416,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onclick(final String username,final String email, final String joke,final String key,int happynum,int sadnum) {
+    public void onclick(final String username,final String email, final String joke,final String key,int happynum,int sadnum,String userUniqid) {
 
         final List liked=shardpSharedprfUtiles.getList(ShardprfContract.ISLIKEDLIST_key);
         final List sad=shardpSharedprfUtiles.getList(ShardprfContract.ISSAD_KEY);
@@ -356,7 +435,7 @@ public class MainActivity extends AppCompatActivity implements
                 if (sad.contains(key))addsadPoints.setImageResource(R.drawable.ic_vain_v2); else addsadPoints.setImageResource(R.drawable.ic_vain_disable);
                 addsadPoints.setOnClickListener(MainActivity.this);
                 ImageView img_follow=view.findViewById(R.id.img_addtofave);
-                if (isfollow.contains(key)) img_follow.setImageResource(R.drawable.ic_follow_on); else img_follow.setImageResource(R.drawable.ic_follow_of);
+                if (isfollow.contains(email)) img_follow.setImageResource(R.drawable.ic_follow_on); else img_follow.setImageResource(R.drawable.ic_follow_of);
                 img_follow.setOnClickListener(MainActivity.this);
                 TextView user_jokes=view.findViewById(R.id.tv_see_user_jokes);
                 user_jokes.setOnClickListener(MainActivity.this);
@@ -372,6 +451,9 @@ public class MainActivity extends AppCompatActivity implements
         userUpdate.setHappy_num(happynum);
         userUpdate.setSad_num(sadnum);
         userUpdate.setDialogUtiles(dialogUtiles);
+        userUpdate.setEmail(email);
+        userUpdate.setUsername(username);
+        userUpdate.setUserUniq_id(userJokes.getUserUniq_id());
 
         dialogUtiles.showDialoge();
 
@@ -380,9 +462,25 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
+        if (s.equals(getString(R.string.key_jokesLanguage))) {
+            if (activityname.equals("authactivity"))
+                cursor = dbUtilies.showDependonLangauae(sharedPreferences, MainActivity.this);
 
-        cursor=dbUtilies.showDependonLangauae(sharedPreferences,MainActivity.this);
-        adapter.updateCursor(cursor);
+            else if (activityname.equals("followingactivity")) {
+                String useremail = getIntent().getExtras().getString("useremail");
+
+                cursor = dbUtilies.getJokesforUser(useremail);
+                Log.d("email", cursor.getCount() + "");
+            }
+            adapter.updateCursor(cursor);
+        }
+        if (s.equals(getString(R.string.key_notification_timer))  || s.equals(getString(R.string.key_joke_notification)))
+        {
+            setupNotifysystem(this,sharedPreferences);
+
+        }
+
+
         Log.d("shared change",s);
     }
 
@@ -391,4 +489,6 @@ public class MainActivity extends AppCompatActivity implements
         super.onDestroy();
         PreferenceManager.getDefaultSharedPreferences(this).unregisterOnSharedPreferenceChangeListener(this);
     }
+
+
 }

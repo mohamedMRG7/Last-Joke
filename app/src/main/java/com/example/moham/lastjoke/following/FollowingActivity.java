@@ -1,6 +1,7 @@
 package com.example.moham.lastjoke.following;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
@@ -9,8 +10,12 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
+import com.example.moham.lastjoke.Database.DbUtilies;
+import com.example.moham.lastjoke.Database.JokeContract;
+import com.example.moham.lastjoke.MainActivity;
 import com.example.moham.lastjoke.MainJokesAdapter;
 import com.example.moham.lastjoke.R;
+import com.example.moham.lastjoke.auth.AuthinticationActivity;
 import com.example.moham.lastjoke.comonUtilties.ShardprfContract;
 import com.example.moham.lastjoke.comonUtilties.SharedprfUtiles;
 import com.example.moham.lastjoke.user.UserJokes;
@@ -22,12 +27,13 @@ import java.util.List;
  * Created by moham on 1/27/2018.
  */
 
-public class FollowingActivity extends AppCompatActivity {
+public class FollowingActivity extends AppCompatActivity implements FollwingAdapter.OnitemClick{
 
 
     private RecyclerView mRecyclerView;
     private FollwingAdapter adapter;
-    private List<String> followers;
+
+    private UserJokes userJokes;
     private SharedprfUtiles sharedprfUtiles;
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -35,17 +41,27 @@ public class FollowingActivity extends AppCompatActivity {
         setContentView(R.layout.activity_user_jokes);
 
         setTitle("YOUR FAVOURITE LIST");
-        UserJokes userJokes= (UserJokes) getIntent().getSerializableExtra("followers");
+         userJokes= (UserJokes) getIntent().getSerializableExtra(AuthinticationActivity.AUTHKEY);
+        DbUtilies dbUtilies=new DbUtilies(this);
+        Cursor cursor=dbUtilies.getallFollowers();
 
-        followers=userJokes.getFollowers();
-        Log.d("follow",followers.size()+"");
         mRecyclerView=findViewById(R.id.rv_userjokes);
         LinearLayoutManager layoutManager
                 = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(layoutManager);
 
-        adapter=new FollwingAdapter(followers);
+        adapter=new FollwingAdapter(cursor,this);
         mRecyclerView.setAdapter(adapter);
+    }
+
+    @Override
+    public void onClick(String email) {
+        Intent intent=new Intent(FollowingActivity.this,MainActivity.class);
+        intent.putExtra("useremail",email);
+        intent.putExtra("activity","followingactivity");
+        intent.putExtra(AuthinticationActivity.AUTHKEY,userJokes);
+        startActivity(intent);
+
     }
 
 

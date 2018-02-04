@@ -75,10 +75,10 @@ public class UserJokes implements Serializable{
     public UserJokes() {
     }
 
-    public UserJokes(String displayName, String email) {
+    public UserJokes(String displayName, String email,String userUniq_id) {
         this.username=displayName;
         this.email=email;
-
+        this.userUniq_id=userUniq_id;
     }
 
     public String getKey() {

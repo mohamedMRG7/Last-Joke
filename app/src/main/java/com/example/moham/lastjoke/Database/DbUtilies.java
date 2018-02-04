@@ -80,12 +80,12 @@ public class DbUtilies {
                 JokeContract.JokeEntry.COLUMN_HAPPYNUM+ " DESC");
 
     }
-    public Cursor getJokesforUser (String user_id)
+    public Cursor getJokesforUser (String email)
     {
         return database.query(
                 JokeContract.JokeEntry.TABLE_NAME,
                 null,
-                JokeContract.JokeEntry.COLUMN_USER_UNIQ_ID +" ='"+user_id+"'",
+                JokeContract.JokeEntry.COLUMN_EMAIL +" ='"+email+"'",
                 null,
                 null,
                 null,
@@ -116,7 +116,7 @@ public class DbUtilies {
     }
 
     //show the jokes depend on its language
-    public Cursor showDependonLangauae(SharedPreferences sharedPreferences,Activity activity)
+    public Cursor showDependonLangauae(SharedPreferences sharedPreferences,Context activity)
     {
         String language_key=activity.getString(R.string.key_jokesLanguage);
         String language_defultValue=activity.getString(R.string.lang_defValue);
@@ -129,4 +129,75 @@ public class DbUtilies {
 
         return cursor;
     }
+
+
+    public  void addJFollwer (UserJokes userJokes)
+    {
+
+        ContentValues values=new ContentValues();
+        values.put(JokeContract.FollowersEntry.COLUMN_USERNAME,userJokes.getUsername());
+        values.put(JokeContract.FollowersEntry.COLUMN_EMAIL,userJokes.getEmail());
+
+
+
+
+        database.insert(JokeContract.FollowersEntry.TABLE_NAME,null,values);
+
+    }
+
+
+    public Cursor getallFollowers()
+    {
+        return database.query(
+                JokeContract.FollowersEntry.TABLE_NAME,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null);
+
+    }
+
+    public  void deleteFollower (UserJokes userJokes)
+    {
+
+        ContentValues values=new ContentValues();
+        values.put(JokeContract.FollowersEntry.COLUMN_USERNAME,userJokes.getUsername());
+        values.put(JokeContract.FollowersEntry.COLUMN_EMAIL,userJokes.getEmail());
+
+
+
+
+        database.delete(JokeContract.FollowersEntry.TABLE_NAME,
+                JokeContract.FollowersEntry.COLUMN_EMAIL+"= '"+userJokes.getEmail()+"'",null);
+
+    }
+
+    public  void addUserInfo (UserJokes userJokes)
+    {
+
+        ContentValues values=new ContentValues();
+        values.put(JokeContract.UserEntry.COLUMN_USERNAME,userJokes.getUsername());
+        values.put(JokeContract.UserEntry.COLUMN_EMAIL,userJokes.getEmail());
+        values.put(JokeContract.UserEntry.COLUMN_UID,userJokes.getUserUniq_id());
+
+
+
+        database.insert(JokeContract.UserEntry.TABLE_NAME,null,values);
+
+    }
+
+    public Cursor getUserinfo (String email)
+    {
+        return database.query(
+                JokeContract.UserEntry.TABLE_NAME,
+                null,
+                JokeContract.UserEntry.COLUMN_EMAIL +" ='"+email+"'",
+                null,
+                null,
+                null,
+                null);
+    }
+
 }

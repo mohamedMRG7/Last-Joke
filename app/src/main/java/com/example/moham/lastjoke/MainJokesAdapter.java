@@ -91,7 +91,8 @@ public class MainJokesAdapter extends RecyclerView.Adapter<MainJokesAdapter.Joke
                 String key=cursor.getString(cursor.getColumnIndex(JokeContract.JokeEntry.COLUMN_USER_ICON));
                 int happynum=cursor.getInt(cursor.getColumnIndex(JokeContract.JokeEntry.COLUMN_HAPPYNUM));
                 int sadnum=cursor.getInt(cursor.getColumnIndex(JokeContract.JokeEntry.COLUMN_SADNUM));
-                onitemclick.onclick(username, email, joke,key,happynum,sadnum);
+                String userUniqeid=cursor.getString(cursor.getColumnIndex(JokeContract.JokeEntry.COLUMN_USER_UNIQ_ID));
+                onitemclick.onclick(username, email, joke,key,happynum,sadnum,userUniqeid);
             }
         }
     }
@@ -119,6 +120,6 @@ public class MainJokesAdapter extends RecyclerView.Adapter<MainJokesAdapter.Joke
 
         public interface Onitemclick
         {
-            void onclick(String username,String joke,String email,String key,int happynum,int sadnum);
+            void onclick(String username,String joke,String email,String key,int happynum,int sadnum,String useruniqid);
         }
 }
