@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.example.moham.lastjoke.R;
+import com.example.moham.lastjoke.animation.AnimationUtilies;
 
 /**
  * Created by moham on 1/26/2018.
@@ -41,6 +42,7 @@ public class PopupDialogUtiles {
         if (view1.getParent() !=null)
             ((ViewGroup)view1.getParent()).removeView(view1);
         dialog=builder.show();
+        AnimationUtilies.zomein(view1);
     }
 
     public void cancelDialog()

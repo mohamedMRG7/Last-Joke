@@ -19,9 +19,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
 import com.example.moham.lastjoke.Database.DbUtilies;
 import com.example.moham.lastjoke.Database.FirebaseDbUtilies;
 import com.example.moham.lastjoke.Database.JokeContract;
+import com.example.moham.lastjoke.animation.AnimationUtilies;
 import com.example.moham.lastjoke.auth.AuthinticationActivity;
 import com.example.moham.lastjoke.comonUtilties.PopupDialogUtiles;
 import com.example.moham.lastjoke.comonUtilties.ShardprfContract;
@@ -133,6 +136,7 @@ public class MainActivity extends AppCompatActivity implements
         rv_alljokes.setLayoutManager(layoutManager);
          rv_alljokes.setAdapter(adapter);
 
+
         if (activityname.equals("authactivity")) {
             cursor = dbUtilies.showDependonLangauae(sharedPreferences, MainActivity.this);
             adapter.updateCursor(cursor);
@@ -146,7 +150,19 @@ public class MainActivity extends AppCompatActivity implements
             Log.d("email",cursor.getCount()+"");
         }
 
+
+        setUpfloatingmenu();
         //set up floating action button and meus
+
+
+
+
+    PreferenceManager.getDefaultSharedPreferences(this).registerOnSharedPreferenceChangeListener(this);
+    db.readFromFB(adapter,MainActivity.this,sharedPreferences,useremail, activityname);
+    }
+
+    public void setUpfloatingmenu()
+    {
 
         List<RFACLabelItem> listOfFloatingMenu=getfloatingMenuList();
         RapidFloatingActionContentLabelList labelshape=getlablelcontentshap(getApplicationContext(),listOfFloatingMenu);
@@ -161,12 +177,7 @@ public class MainActivity extends AppCompatActivity implements
         ).build();
 
 
-
-    PreferenceManager.getDefaultSharedPreferences(this).registerOnSharedPreferenceChangeListener(this);
-    db.readFromFB(adapter,MainActivity.this,sharedPreferences,useremail, activityname);
     }
-
-
 
     //on floating action menu click
     @Override
@@ -196,6 +207,14 @@ public class MainActivity extends AppCompatActivity implements
 
             case  3:
                 signOut();
+                break;
+
+            case 4 :
+                Intent intent2=getIntent();
+                intent2.putExtra("activity","authactivity");
+                finish();
+                startActivity(intent2);
+
         }
     }
 
@@ -228,6 +247,14 @@ public class MainActivity extends AppCompatActivity implements
 
             case  3:
                 signOut();
+                break;
+
+
+            case 4 :
+                Intent intent2=getIntent();
+                intent2.putExtra("activity","authactivity");
+                finish();
+                startActivity(intent2);
         }
     }
 
@@ -289,31 +316,17 @@ public class MainActivity extends AppCompatActivity implements
 
                 .setWrapper(0)
         );
-
-        return items;
-    }
-
-    private List<RFACLabelItem> showalljokes()
-    {
-        List<RFACLabelItem> items = new ArrayList<>();
-
+        if (activityname.equals("followingactivity"))
         items.add(new RFACLabelItem<Integer>()
                 .setLabel("Show all jokes")
-                .setResId(R.drawable.myjokes)
-
-                .setWrapper(0)
-        );
-
-
-        items.add(new RFACLabelItem<Integer>()
-                .setLabel("Sign Out")
-                .setResId(R.drawable.exit)
-
+                .setResId(R.drawable.show_all)
                 .setWrapper(0)
         );
 
         return items;
     }
+
+
 
 
     //Lable shape and add items
@@ -349,45 +362,70 @@ public class MainActivity extends AppCompatActivity implements
                 String joke=et_addjoke.getText().toString();
                 String name=userJokes.getUsername();
                 String email=userJokes.getEmail();
-
+                int jokeSize=et_addjoke.getText().length();
                 String uniq_id=userJokes.getUserUniq_id();
                 String icon ="logonotext.png";
-                UserJokes userJokes=new UserJokes(name,email,uniq_id,icon,joke,0,0);
-                db.addUserJoketoFB(userJokes);
-                cursor=dbUtilies.showDependonLangauae(sharedPreferences,MainActivity.this);
-                adapter.updateCursor(cursor);
-                et_addjoke.setText("");
-                dialogUtiles.cancelDialog();
+                if (jokeSize>10) {
+                    UserJokes userJokes = new UserJokes(name, email, uniq_id, icon, joke, 0, 0);
+                    db.addUserJoketoFB(userJokes);
+                    cursor = dbUtilies.showDependonLangauae(sharedPreferences, MainActivity.this);
+                    adapter.updateCursor(cursor);
+                    et_addjoke.setText("");
+                    dialogUtiles.cancelDialog();
+                }else
+                {
+                    AnimationUtilies.shake(et_addjoke);
+                    Toast.makeText(this, R.string.notvalid_joke_txt,Toast.LENGTH_LONG).show();
+                }
                 break;
 
             case R.id.img_happy:
 
                 List<String>likes=shardpSharedprfUtiles.getList(ShardprfContract.ISLIKEDLIST_key);
-                if (!likes.contains(userUpdate.getUserIcon())) {
+                List<String>sades1=shardpSharedprfUtiles.getList(ShardprfContract.ISSAD_KEY);
+                if (!likes.contains(userUpdate.getUserIcon()) && !sades1.contains(userUpdate.getUserIcon())) {
                     likes.add(userUpdate.getUserIcon());
 
                     db.updateHappynum(userUpdate.getUserIcon(), userUpdate.getHappy_num() + 1);
-                }else {
+                }else if (!likes.contains(userUpdate.getUserIcon())&&sades1.contains(userUpdate.getUserIcon())){
+                    sades1.remove(userUpdate.getUserIcon());
+                    likes.add(userUpdate.getUserIcon());
+                    db.updateHappynum(userUpdate.getUserIcon(), userUpdate.getHappy_num() +1);
+                    db.updatesadNum(userUpdate.getUserIcon(),userUpdate.getSad_num()-1);
+                }else if (likes.contains(userUpdate.getUserIcon())&&!sades1.contains(userUpdate.getUserIcon()))
+                {
                     likes.remove(userUpdate.getUserIcon());
-
                     db.updateHappynum(userUpdate.getUserIcon(), userUpdate.getHappy_num() -1);
+
                 }
                     shardpSharedprfUtiles.saveObect(likes,ShardprfContract.ISLIKEDLIST_key);
+                    shardpSharedprfUtiles.saveObect(sades1,ShardprfContract.ISSAD_KEY);
                     userUpdate.getDialogUtiles().cancelDialog();
                 break;
             case R.id.img_sad:
                 List<String>sades=shardpSharedprfUtiles.getList(ShardprfContract.ISSAD_KEY);
-                if (!sades.contains(userUpdate.getUserIcon())) {
+                List<String>likes2=shardpSharedprfUtiles.getList(ShardprfContract.ISLIKEDLIST_key);
+
+                if (!sades.contains(userUpdate.getUserIcon()) &&!likes2.contains(userUpdate.getUserIcon())) {
                     sades.add(userUpdate.getUserIcon());
 
                     db.updatesadNum(userUpdate.getUserIcon(),userUpdate.getSad_num()+1);
-                }else {
+                }else if (!sades.contains(userUpdate.getUserIcon()) &&likes2.contains(userUpdate.getUserIcon())){
+                    likes2.remove(userUpdate.getUserIcon());
+                    sades.add(userUpdate.getUserIcon());
+                    db.updatesadNum(userUpdate.getUserIcon(),userUpdate.getSad_num()+1);
+                    db.updateHappynum(userUpdate.getUserIcon(), userUpdate.getHappy_num() -1);
+                    Log.e("sad",likes2.contains(userUpdate.getUserIcon())+"");
+                }else if (sades.contains(userUpdate.getUserIcon())&&!likes2.contains(userUpdate.getUserIcon()))
+                {
+                    Log.e("sad",likes2.contains(userUpdate.getUserIcon())+"");
+                    Log.e("sad","is sad");
                     sades.remove(userUpdate.getUserIcon());
-
                     db.updatesadNum(userUpdate.getUserIcon(),userUpdate.getSad_num()-1);
+
                 }
                 shardpSharedprfUtiles.saveObect(sades,ShardprfContract.ISSAD_KEY);
-
+                shardpSharedprfUtiles.saveObect(likes2,ShardprfContract.ISLIKEDLIST_key);
                 userUpdate.getDialogUtiles().cancelDialog();
                 break;
 
@@ -408,7 +446,9 @@ public class MainActivity extends AppCompatActivity implements
                     db.addfollwerlist(userUpdate.getUserUniq_id(),followers);
                  //   db.updatesadNum(userUpdate.getUserIcon(),userUpdate.getSad_num()-1);
                 }
+                AnimationUtilies.shake(userUpdate.getImg_follow());
                 shardpSharedprfUtiles.saveObect(followers,ShardprfContract.ISFOLLOW_KEY);
+                break;
 
 
         }
@@ -429,12 +469,13 @@ public class MainActivity extends AppCompatActivity implements
             public void action(View view, android.app.AlertDialog dialog) {
 
                 ImageView addhappyPoints =view.findViewById(R.id.img_happy);
-                if (liked.contains(key))addhappyPoints.setImageResource(R.drawable.ic_laughing_v2); else addhappyPoints.setImageResource(R.drawable.ic_laughing__disable);
+                if (liked.contains(key) &&!sad.contains(key))addhappyPoints.setImageResource(R.drawable.ic_laughing_v2); else addhappyPoints.setImageResource(R.drawable.ic_laughing__disable);
                 addhappyPoints.setOnClickListener(MainActivity.this);
                 ImageView addsadPoints=view.findViewById(R.id.img_sad);
-                if (sad.contains(key))addsadPoints.setImageResource(R.drawable.ic_vain_v2); else addsadPoints.setImageResource(R.drawable.ic_vain_disable);
+                if (sad.contains(key) &&!liked.contains(key))addsadPoints.setImageResource(R.drawable.ic_vain_v2); else addsadPoints.setImageResource(R.drawable.ic_vain_disable);
                 addsadPoints.setOnClickListener(MainActivity.this);
                 ImageView img_follow=view.findViewById(R.id.img_addtofave);
+
                 if (isfollow.contains(email)) img_follow.setImageResource(R.drawable.ic_follow_on); else img_follow.setImageResource(R.drawable.ic_follow_of);
                 img_follow.setOnClickListener(MainActivity.this);
                 TextView user_jokes=view.findViewById(R.id.tv_see_user_jokes);

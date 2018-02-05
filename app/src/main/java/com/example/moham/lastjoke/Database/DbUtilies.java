@@ -58,13 +58,13 @@ public class DbUtilies {
     {
         int happynum=userJokes.getHappy_num();
         int sadnum=userJokes.getSad_num();
-        String uniq_id=userJokes.getUserUniq_id();
+        String uniq_id=userJokes.getUserIcon();
 
         ContentValues values=new ContentValues();
         values.put(JokeContract.JokeEntry.COLUMN_HAPPYNUM,happynum);
         values.put(JokeContract.JokeEntry.COLUMN_SADNUM,sadnum);
         database.update(JokeContract.JokeEntry.TABLE_NAME,values,
-                JokeContract.JokeEntry.COLUMN_USER_UNIQ_ID+" = '"+uniq_id+"'"
+                JokeContract.JokeEntry.COLUMN_USER_ICON+" = '"+uniq_id+"'"
                 ,null);
     }
 

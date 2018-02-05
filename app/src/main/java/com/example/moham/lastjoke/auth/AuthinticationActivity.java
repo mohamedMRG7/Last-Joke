@@ -70,7 +70,7 @@ public class AuthinticationActivity extends AppCompatActivity implements Seriali
                     intent.putExtra("activity","authactivity");
                     intent.putExtra(AUTHKEY,userJokes);
                     startActivity(intent);
-                  //  finish();
+                    finish();
                 }else
                 {
 
@@ -126,7 +126,7 @@ public class AuthinticationActivity extends AppCompatActivity implements Seriali
                 intent.putExtra(AUTHKEY,userJokes);
                 intent.putExtra("activity","authactivity");
                 startActivity(intent);
-              //  finish();
+                finish();
 
                 //i will send the userjoke with data but will make it seriazable first and modify constractor
             }else if (resultCode==RESULT_CANCELED)  if (isConnected==true)finish();

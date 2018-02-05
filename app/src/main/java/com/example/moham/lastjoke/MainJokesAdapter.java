@@ -8,7 +8,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
 import com.example.moham.lastjoke.Database.JokeContract;
+import com.example.moham.lastjoke.animation.AnimationUtilies;
 
 /**
  * Created by moham on 1/27/2018.
@@ -82,7 +85,7 @@ public class MainJokesAdapter extends RecyclerView.Adapter<MainJokesAdapter.Joke
         @Override
         public void onClick(View view) {
             int position =getAdapterPosition()-1;
-
+            AnimationUtilies.shake(view);
             if (position>=0) {
                 cursor.moveToPosition(position);
                 String username=cursor.getString(cursor.getColumnIndex(JokeContract.JokeEntry.COLUMN_USERNAME));

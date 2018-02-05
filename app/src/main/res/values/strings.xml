@@ -17,4 +17,5 @@
     <string name="timer_defult_value">30</string>
     <string name="arabic">Arabic</string>
     <string name="english">English</string>
+    <string name="notvalid_joke_txt">Its too short dude its not even a Joke</string>
 </resources>
