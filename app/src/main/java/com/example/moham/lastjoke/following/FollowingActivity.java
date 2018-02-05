@@ -9,6 +9,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.example.moham.lastjoke.Database.DbUtilies;
 import com.example.moham.lastjoke.Database.JokeContract;
@@ -35,12 +38,16 @@ public class FollowingActivity extends AppCompatActivity implements FollwingAdap
 
     private UserJokes userJokes;
     private SharedprfUtiles sharedprfUtiles;
+    private TextView nofrinds;
+    private ImageView logo;
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_jokes);
-
         setTitle("YOUR FAVOURITE LIST");
+
+        nofrinds=findViewById(R.id.tv_nofrinds);
+        logo=findViewById(R.id.logo);
          userJokes= (UserJokes) getIntent().getSerializableExtra(AuthinticationActivity.AUTHKEY);
         DbUtilies dbUtilies=new DbUtilies(this);
         Cursor cursor=dbUtilies.getallFollowers();
@@ -52,6 +59,12 @@ public class FollowingActivity extends AppCompatActivity implements FollwingAdap
 
         adapter=new FollwingAdapter(cursor,this);
         mRecyclerView.setAdapter(adapter);
+        if (adapter.getItemCount()==0)
+        {
+            nofrinds.setVisibility(View.VISIBLE);
+            logo.setVisibility(View.VISIBLE);
+        }
+
     }
 
     @Override

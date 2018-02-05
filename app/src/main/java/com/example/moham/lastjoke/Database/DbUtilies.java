@@ -20,7 +20,7 @@ import java.text.Bidi;
 public class DbUtilies {
 
     private DbHelper dbHelper;
-    private SQLiteDatabase database;
+    private static SQLiteDatabase database;
     private boolean firstAdd=true;
     private final String ARABIC="Arabic";
     private final String ENGLISH="English";
@@ -70,6 +70,7 @@ public class DbUtilies {
 
     public Cursor getallJokes()
     {
+        database=dbHelper.getWritableDatabase();
         return database.query(
                 JokeContract.JokeEntry.TABLE_NAME,
                 null,
@@ -80,7 +81,7 @@ public class DbUtilies {
                 JokeContract.JokeEntry.COLUMN_HAPPYNUM+ " DESC");
 
     }
-    public Cursor getJokesforUser (String email)
+    public static Cursor getJokesforUser (String email)
     {
         return database.query(
                 JokeContract.JokeEntry.TABLE_NAME,

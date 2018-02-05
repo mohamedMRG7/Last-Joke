@@ -78,7 +78,7 @@ public class AuthinticationActivity extends AppCompatActivity implements Seriali
                             AuthUI.getInstance()
                                     .createSignInIntentBuilder()
                                     .setIsSmartLockEnabled(false)
-                                    .setTheme(R.style.AppTheme)
+                                    .setTheme(R.style.splaceThem)
                                     .setLogo(R.drawable.logo)
                                     .setAvailableProviders(
                                             Arrays.asList(new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),

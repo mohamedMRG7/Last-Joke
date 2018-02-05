@@ -2,11 +2,13 @@ package com.example.moham.lastjoke.following;
 
 import android.database.Cursor;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.moham.lastjoke.Database.DbUtilies;
 import com.example.moham.lastjoke.Database.JokeContract;
 import com.example.moham.lastjoke.R;
 
@@ -19,7 +21,6 @@ import java.util.List;
 public class FollwingAdapter  extends RecyclerView.Adapter<FollwingAdapter.FollwingAdapterViewholer> {
 
 
-    private String [] dummynames={"mohamed ahmed","mohamed 5alel","ahmed sha3ban"};
     private Cursor cursor;
     private OnitemClick onitemClick;
 
@@ -42,7 +43,12 @@ public class FollwingAdapter  extends RecyclerView.Adapter<FollwingAdapter.Follw
     public void onBindViewHolder(FollwingAdapterViewholer holder, int position) {
 
         cursor.moveToPosition(position);
+
         String username=cursor.getString(cursor.getColumnIndex(JokeContract.FollowersEntry.COLUMN_USERNAME));
+        String email=cursor.getString(cursor.getColumnIndex(JokeContract.FollowersEntry.COLUMN_EMAIL));
+        Cursor userjokes= DbUtilies.getJokesforUser(email);
+        String numofJokes=String.valueOf(userjokes.getCount());
+        holder.numberofjokes.setText(numofJokes);
         holder.username.setText(username);
     }
 
@@ -56,10 +62,12 @@ public class FollwingAdapter  extends RecyclerView.Adapter<FollwingAdapter.Follw
 
     class FollwingAdapterViewholer extends RecyclerView.ViewHolder implements View.OnClickListener
     {
-        TextView username;
+        TextView username,numberofjokes;
+
         public FollwingAdapterViewholer(View itemView) {
             super(itemView);
             username= itemView.findViewById(R.id.tv_username);
+            numberofjokes=itemView.findViewById(R.id.tv_numofjokes);
             itemView.setOnClickListener(this);
         }
 
