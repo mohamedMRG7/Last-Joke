@@ -37,8 +37,7 @@ public class JokeNotifyTask {
     }
 
     private static void sayAJoke(Context context) {
-        Date currentTime = Calendar.getInstance().getTime();
-        Log.d("Notification","the joke on uuuuuuuu "+currentTime.toString());
+
         SharedPreferences sharedPreferences=PreferenceManager.getDefaultSharedPreferences(context);
         DbUtilies dbUtilies=new DbUtilies(context);
         Cursor cursor=dbUtilies.showDependonLangauae(sharedPreferences,context);
@@ -47,7 +46,7 @@ public class JokeNotifyTask {
         cursor.moveToPosition(pos);
         String joke=cursor.getString(cursor.getColumnIndex(JokeContract.JokeEntry.COLUMN_JOKE));
 
-        NotificationUtilies.notifybyrondomJoke(context,joke);
+        NotificationUtilies.notifybyrondomJoke(context,joke,pos);
     }
 
 }

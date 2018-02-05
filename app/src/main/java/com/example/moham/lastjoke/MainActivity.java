@@ -77,6 +77,7 @@ public class MainActivity extends AppCompatActivity implements
     DatabaseReference reference;
     FirebaseDatabase database;
     String activityname;
+    int notificationpos;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -113,7 +114,8 @@ public class MainActivity extends AppCompatActivity implements
 
         userJokes= (UserJokes) getIntent().getSerializableExtra(AuthinticationActivity.AUTHKEY);
          activityname =getIntent().getExtras().getString("activity");
-        Log.d("email",activityname+"");
+          notificationpos=getIntent().getExtras().getInt("position");
+
 
 
         db=new FirebaseDbUtilies(this,shardpSharedprfUtiles,userJokes.getUserUniq_id());
@@ -135,6 +137,7 @@ public class MainActivity extends AppCompatActivity implements
                 = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         rv_alljokes.setLayoutManager(layoutManager);
          rv_alljokes.setAdapter(adapter);
+
 
 
         if (activityname.equals("authactivity")) {
@@ -176,6 +179,12 @@ public class MainActivity extends AppCompatActivity implements
                 labelshape
         ).build();
 
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
 
     }
 
